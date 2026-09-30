@@ -1,41 +1,50 @@
-import "./App.css"
+import "./App.css";
 import { useRef, useState } from "react";
-import NotificationCardList from "./NotificationWidget/NotificationCardList/NotificationCardList";
-import { NotificationCardListHandle } from "./NotificationWidget/types";
-import BellRing from "./icons/BellRing";
+import NotificationWidget from "./NotificationWidget/Widget/NotificationWidget";
+import { NotificationWidgetHandle } from "./NotificationWidget/types";
 
 function App() {
-    const listRef = useRef<NotificationCardListHandle>(null);
-    const [counter, setCounter] = useState(1)
+  const listRef = useRef<NotificationWidgetHandle>(null);
+  const [counter, setCounter] = useState(1);
 
-    const showNotification = () => {
-        setCounter(prev => prev+1)
-        listRef.current?.add({
-            title: `Новое уведомление ${counter}`,
-            description: "У вас есть новое сообщение, требующее внимания.",
-            buttonText: "Посмотреть",
-            Icon: <BellRing />,
-        });
-    };
+  const showNotification = () => {
+    setCounter((prev) => prev + 1);
+    listRef.current?.add({
+      status: "unread",
+      title: `Новое уведомление ${counter}`,
+      description: "У вас есть новое сообщение, требующее внимания.",
+      picture: {
+        main: "",
+        preview: "",
+        cover: "",
+        icon: "",
+        emoji: "",
+      },
+      buttonText: "Посмотреть",
+    });
+  };
 
-    return (
-        <div>
-            <button
-                style={{
-                    background: "blue",
-                    borderRadius: "8px",
-                    padding: "12px 20px",
-                    color: "white",
-                    marginInline: "auto",
-                    display: "block",
-                    border: "none",
-                    marginTop : "12px",
-                    cursor: "pointer"
-                }}
-                onClick={showNotification}>Показать уведомление</button>
-            <NotificationCardList ref={listRef} maxVisible={3} />
-        </div>
-    );
+  return (
+    <div>
+      <button
+        style={{
+          background: "blue",
+          borderRadius: "8px",
+          padding: "12px 20px",
+          color: "white",
+          marginInline: "auto",
+          display: "block",
+          border: "none",
+          marginTop: "12px",
+          cursor: "pointer",
+        }}
+        onClick={showNotification}
+      >
+        Показать уведомление
+      </button>
+      <NotificationWidget ref={listRef} />
+    </div>
+  );
 }
 
 export default App;

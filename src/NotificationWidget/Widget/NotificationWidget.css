@@ -1,4 +1,4 @@
-.notification-card-list {
+.notification-widget {
     --omni-nfl-z-index: 999999;
     --omni-nfl-top-offset: 130px;
     --omni-nfl-edge-offset: 20px;
@@ -38,19 +38,19 @@
     pointer-events: none;
 }
 
-.notification-card-list *,
-.notification-card-list *::before,
-.notification-card-list *::after {
+.notification-widget *,
+.notification-widget *::before,
+.notification-widget *::after {
     box-sizing: border-box;
 }
 
-.notification-card-list__item {
+.notification-widget__item {
     pointer-events: auto;
     transition: transform var(--omni-nfl-reorder-duration) var(--omni-nfl-reorder-easing);
     -webkit-transition: -webkit-transform var(--omni-nfl-reorder-duration) var(--omni-nfl-reorder-easing);
 }
 
-.notification-card-list__item--removing {
+.notification-widget__item--removing {
     animation: omni-nfl-slide-out var(--omni-nfl-exit-duration) var(--omni-nfl-exit-easing) forwards;
     -webkit-animation: omni-nfl-slide-out var(--omni-nfl-exit-duration) var(--omni-nfl-exit-easing) forwards;
     pointer-events: none;
@@ -79,8 +79,8 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .notification-card-list__item,
-    .notification-card-list__item--removing {
+    .notification-widget__item,
+    .notification-widget__item--removing {
         transition: none;
         -webkit-transition: none;
         animation: none;

@@ -112,6 +112,19 @@
     display: block;
 }
 
+.notification-card__icon img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: inherit;
+}
+
+.notification-card__icon span {
+    font-size: 28px;
+    line-height: 1;
+}
+
 .notification-card__content {
     display: -webkit-box;
     display: -webkit-flex;

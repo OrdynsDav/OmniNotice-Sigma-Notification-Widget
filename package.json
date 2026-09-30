@@ -2,9 +2,24 @@
   "name": "omni-notice-sigma-notification-widget",
   "version": "1.0.0",
   "private": false,
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/types/index.d.ts",
+  "style": "./dist/style.css",
+  "files": ["dist"],
+  "exports": {
+    ".": {
+      "types": "./dist/types/index.d.ts",
+      "import": "./dist/index.js",
+      "require": "./dist/index.cjs"
+    },
+    "./style.css": "./dist/style.css"
+  },
   "scripts": {
     "dev": "vite",
-    "build": "tsc && vite build",
+    "build": "tsc && vite build --config vite.lib.config.ts && tsc --declaration --emitDeclarationOnly --noEmit false --outDir dist/types",
+    "build:demo": "tsc && vite build",
     "preview": "vite preview"
   },
   "dependencies": {
