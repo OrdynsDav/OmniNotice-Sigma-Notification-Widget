@@ -1,89 +1,93 @@
 .notification-widget {
-    --omni-nfl-z-index: 999999;
-    --omni-nfl-top-offset: 130px;
-    --omni-nfl-edge-offset: 20px;
-    --omni-nfl-max-width: 480px;
-    --omni-nfl-item-gap: 16px;
+  --omni-nfl-z-index: 999999;
+  --omni-nfl-top-offset: 130px;
+  --omni-nfl-edge-offset: 20px;
+  --omni-nfl-max-width: 480px;
+  --omni-nfl-item-gap: 16px;
 
-    --omni-nfl-reorder-duration: 0.3s;
-    --omni-nfl-reorder-easing: ease;
+  --omni-nfl-reorder-duration: 0.3s;
+  --omni-nfl-reorder-easing: ease;
 
-    --omni-nfl-exit-duration: 0.25s;
-    --omni-nfl-exit-easing: ease;
-    --omni-nfl-exit-distance: 40px;
+  --omni-nfl-exit-duration: 0.25s;
+  --omni-nfl-exit-easing: ease;
+  --omni-nfl-exit-distance: 40px;
 
-    all: initial;
-    box-sizing: border-box;
+  all: initial;
+  box-sizing: border-box;
 
-    position: fixed;
-    top: var(--omni-nfl-top-offset);
-    right: var(--omni-nfl-edge-offset);
-    left: var(--omni-nfl-edge-offset);
-    margin-left: auto;
-    max-width: var(--omni-nfl-max-width);
+  position: fixed;
+  top: var(--omni-nfl-top-offset);
+  right: var(--omni-nfl-edge-offset);
+  left: var(--omni-nfl-edge-offset);
+  margin-left: auto;
+  max-width: var(--omni-nfl-max-width);
 
-    display: -webkit-box;
-    display: -webkit-flex;
-    display: -ms-flexbox;
-    display: flex;
-    -webkit-box-orient: vertical;
-    -webkit-box-direction: normal;
-    -webkit-flex-direction: column;
-    -ms-flex-direction: column;
-    flex-direction: column;
-    gap: var(--omni-nfl-item-gap);
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  gap: var(--omni-nfl-item-gap);
 
-    z-index: var(--omni-nfl-z-index);
-    isolation: isolate;
-    pointer-events: none;
+  z-index: var(--omni-nfl-z-index);
+  isolation: isolate;
+  pointer-events: none;
 }
 
 .notification-widget *,
 .notification-widget *::before,
 .notification-widget *::after {
-    box-sizing: border-box;
+  box-sizing: border-box;
 }
 
 .notification-widget__item {
-    pointer-events: auto;
-    transition: transform var(--omni-nfl-reorder-duration) var(--omni-nfl-reorder-easing);
-    -webkit-transition: -webkit-transform var(--omni-nfl-reorder-duration) var(--omni-nfl-reorder-easing);
+  pointer-events: auto;
+  transition: transform var(--omni-nfl-reorder-duration)
+    var(--omni-nfl-reorder-easing);
+  -webkit-transition: -webkit-transform var(--omni-nfl-reorder-duration)
+    var(--omni-nfl-reorder-easing);
 }
 
 .notification-widget__item--removing {
-    animation: omni-nfl-slide-out var(--omni-nfl-exit-duration) var(--omni-nfl-exit-easing) forwards;
-    -webkit-animation: omni-nfl-slide-out var(--omni-nfl-exit-duration) var(--omni-nfl-exit-easing) forwards;
-    pointer-events: none;
+  animation: omni-nfl-slide-out var(--omni-nfl-exit-duration)
+    var(--omni-nfl-exit-easing) forwards;
+  -webkit-animation: omni-nfl-slide-out var(--omni-nfl-exit-duration)
+    var(--omni-nfl-exit-easing) forwards;
+  pointer-events: none;
 }
 
 @keyframes omni-nfl-slide-out {
-    from {
-        opacity: 1;
-        transform: translateX(0);
-    }
-    to {
-        opacity: 0;
-        transform: translateX(var(--omni-nfl-exit-distance));
-    }
+  from {
+    opacity: 1;
+    transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    transform: translateX(var(--omni-nfl-exit-distance));
+  }
 }
 
 @-webkit-keyframes omni-nfl-slide-out {
-    from {
-        opacity: 1;
-        -webkit-transform: translateX(0);
-    }
-    to {
-        opacity: 0;
-        -webkit-transform: translateX(var(--omni-nfl-exit-distance));
-    }
+  from {
+    opacity: 1;
+    -webkit-transform: translateX(0);
+  }
+  to {
+    opacity: 0;
+    -webkit-transform: translateX(var(--omni-nfl-exit-distance));
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .notification-widget__item,
-    .notification-widget__item--removing {
-        transition: none;
-        -webkit-transition: none;
-        animation: none;
-        -webkit-animation: none;
-    }
+  .notification-widget__item,
+  .notification-widget__item--removing {
+    transition: none;
+    -webkit-transition: none;
+    animation: none;
+    -webkit-animation: none;
+  }
 }

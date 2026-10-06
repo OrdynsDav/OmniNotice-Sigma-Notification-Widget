@@ -10,6 +10,7 @@ type NotificationCardComponentProps = NotificationCardProps & {
 
 export default function NotificationCard({
   title,
+  status,
   description,
   picture,
   buttonText,
@@ -75,10 +76,7 @@ export default function NotificationCard({
     <div
       ref={containerRef}
       className="notification-card"
-      role="alert"
-      aria-labelledby={titleId}
-      aria-describedby={descriptionId}
-      tabIndex={-1}
+      data-status={status}
     >
       <div className="notification-card__inner">
         <div className="notification-card__icon" aria-hidden="true">

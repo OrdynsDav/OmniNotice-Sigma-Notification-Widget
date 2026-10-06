@@ -12,11 +12,11 @@ export interface NotificationSettings {
 }
 
 export interface NotificationPicture {
-  main: string;
-  preview: string;
-  cover: string;
-  icon: string;
-  emoji: string;
+  main?: string;
+  preview?: string;
+  cover?: string;
+  icon?: string;
+  emoji?: string;
 }
 
 export interface NotificationApiItem {

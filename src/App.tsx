@@ -14,11 +14,7 @@ function App() {
       title: `Новое уведомление ${counter}`,
       description: "У вас есть новое сообщение, требующее внимания.",
       picture: {
-        main: "",
-        preview: "",
-        cover: "",
         icon: "",
-        emoji: "",
       },
       buttonText: "Посмотреть",
     });

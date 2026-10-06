@@ -1,5 +1,4 @@
 .notification-card {
-    /*! Обязательно поменяйте на свой шрифт*/
     --omni-nf-font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
 
     --omni-nf-color-title: #0C151D;

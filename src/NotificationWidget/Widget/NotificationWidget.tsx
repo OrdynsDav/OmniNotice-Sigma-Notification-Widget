@@ -81,9 +81,6 @@ const NotificationWidget = forwardRef<
     [removeItem],
   );
 
-  // Следим за превышением лимита отдельно от add() — здесь мы всегда смотрим
-  // на актуальное состояние items и removingIdsRef, поэтому корректно вытесняем
-  // ВЕСЬ избыток карточек, а не только одну, даже при очень частых добавлениях подряд.
   useEffect(() => {
     const activeItems = items.filter(
       (item) => !removingIdsRef.current.has(item.id),
@@ -96,7 +93,6 @@ const NotificationWidget = forwardRef<
   }, [items, visibleLimit, removeItem]);
 
   // FLIP-анимация: при изменении списка карточки плавно "доезжают"
-  // до новой позиции вместо мгновенного скачка.
   useLayoutEffect(() => {
     const container = containerRef.current;
     if (!container) return;
@@ -145,6 +141,9 @@ const NotificationWidget = forwardRef<
         <div
           key={item.id}
           data-notification-id={item.id}
+          aria-hidden={removingIds.has(item.id) || undefined}
+          aria-live="polite"
+          aria-relevant="additions"
           className={
             "notification-widget__item" +
             (removingIds.has(item.id)

@@ -5,7 +5,7 @@ import type { NotificationSettings } from "./types";
 const notificationSettings: NotificationSettings = {
   maxVisible: 3,
   removalAnimationMs: 250,
-  closeWithKeyboard: "",
+  closeWithKeyboard: "Escape",
   closeButtonEnabled: true,
   buttonHref: "#",
   autoCloseMs: 3000,
