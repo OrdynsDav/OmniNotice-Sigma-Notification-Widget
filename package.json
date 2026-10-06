@@ -22,7 +22,8 @@
     "dev": "vite",
     "build": "tsc && vite build --config vite.lib.config.ts && tsc --declaration --emitDeclarationOnly --noEmit false --outDir dist/types",
     "build:demo": "tsc && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "prepublishOnly": "npm run build"
   },
   "peerDependencies": {
     "react": ">=18.2.0",
