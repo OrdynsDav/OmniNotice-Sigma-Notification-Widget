@@ -38,7 +38,9 @@ function App() {
       >
         Показать уведомление
       </button>
-      <NotificationWidget ref={listRef} />
+      <NotificationWidget ref={listRef} settings={{
+        autoCloseMs: 0
+      }}/>
     </div>
   );
 }

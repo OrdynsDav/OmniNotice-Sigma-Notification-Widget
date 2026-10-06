@@ -66,15 +66,16 @@ const NotificationWidget = forwardRef<
   useImperativeHandle(
     ref,
     () => ({
-      add: (notification) => {
-        const id = createId();
+      add: ({ id: customId, ...notification }) => {
+        const id = customId || createId();
         const newItem: NotificationListItem = {
-          id,
           ...notification,
+          id,
           onClose: () => removeItem(id),
         };
 
         setItems((prev) => [newItem, ...prev]);
+        return id;
       },
       remove: removeItem,
     }),

@@ -37,7 +37,9 @@ export interface NotificationListItem extends NotificationCardProps {
 }
 
 export interface NotificationWidgetHandle {
-  add: (notification: Omit<NotificationCardProps, "id" | "onClose">) => void;
+  add: (
+    notification: Omit<NotificationCardProps, "onClose"> & { id?: string },
+  ) => string;
   remove: (id: string) => void;
 }
 
