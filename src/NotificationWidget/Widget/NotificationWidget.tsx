@@ -39,10 +39,50 @@ const NotificationWidget = forwardRef<
   // при частых быстрых добавлениях.
   const removingIdsRef = useRef<Set<string>>(new Set());
 
+  // Последний сфокусированный элемент вне виджета: туда вернём фокус при закрытии
+  const lastOutsideFocusRef = useRef<HTMLElement | null>(null);
+
+  useEffect(() => {
+    const onFocusIn = (event: FocusEvent) => {
+      const target = event.target;
+      if (
+        target instanceof HTMLElement &&
+        !containerRef.current?.contains(target)
+      ) {
+        lastOutsideFocusRef.current = target;
+      }
+    };
+
+    document.addEventListener("focusin", onFocusIn);
+    return () => document.removeEventListener("focusin", onFocusIn);
+  }, []);
+
+  // Если фокус внутри удаляемой карточки, возвращаем его на предыдущий элемент
+  // ДО установки aria-hidden.
+  const releaseFocus = useCallback((id: string) => {
+    const container = containerRef.current;
+    const active = document.activeElement;
+    if (!container || !(active instanceof HTMLElement)) return;
+
+    const item = container.querySelector<HTMLElement>(
+      `[data-notification-id="${CSS.escape(id)}"]`,
+    );
+    if (!item || !item.contains(active)) return;
+
+    const previous = lastOutsideFocusRef.current;
+    if (previous && previous.isConnected) {
+      previous.focus({ preventScroll: true });
+    } else {
+      active.blur();
+    }
+  }, []);
+
   const removeItem = useCallback(
     (id: string) => {
       if (removingIdsRef.current.has(id)) return;
       removingIdsRef.current.add(id);
+
+      releaseFocus(id);
 
       setRemovingIds((prev) => {
         const next = new Set(prev);
@@ -60,7 +100,7 @@ const NotificationWidget = forwardRef<
         });
       }, animationDuration);
     },
-    [animationDuration],
+    [animationDuration, releaseFocus],
   );
 
   useImperativeHandle(
@@ -143,8 +183,6 @@ const NotificationWidget = forwardRef<
           key={item.id}
           data-notification-id={item.id}
           aria-hidden={removingIds.has(item.id) || undefined}
-          aria-live="polite"
-          aria-relevant="additions"
           className={
             "notification-widget__item" +
             (removingIds.has(item.id)

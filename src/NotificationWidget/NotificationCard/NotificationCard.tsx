@@ -1,8 +1,9 @@
-import { useEffect, useId, useRef, useState } from "react";
+import { ComponentType, isValidElement, useEffect, useId, useState } from "react";
 import type { NotificationCardProps, NotificationSettings } from "../types";
 import notificationSettings from "../notification.config";
 import { renderIcon } from "../helpers/renderIcon";
 import "./NotificationCard.css";
+import { isEmoji } from "../helpers/isEmoji";
 
 type NotificationCardComponentProps = NotificationCardProps & {
   settings?: NotificationSettings;
@@ -21,27 +22,58 @@ export default function NotificationCard({
   const resolvedButtonHref = buttonHref ?? settings.buttonHref;
   const titleId = useId();
   const descriptionId = useId();
-  const [imageFailed, setImageFailed] = useState(false);
-  const imageUrl =
-    picture.icon || picture.preview || picture.main || picture.cover;
 
-  const containerRef = useRef<HTMLDivElement>(null);
-  const previouslyFocusedElement = useRef<HTMLElement | null>(null);
+  const { image, icon, emoji } = picture;
+
+  // Пути, которые не загрузились: для них идём дальше по цепочке.
+  // Хранится URL, поэтому при смене пути ошибка сбрасывается сама.
+  const [failedUrls, setFailedUrls] = useState<string[]>([]);
+  const markFailed = (url: string) =>
+    setFailedUrls((prev) => (prev.includes(url) ? prev : [...prev, url]));
+  const isFailed = (url: string) => failedUrls.includes(url);
 
   const hasButton = Boolean(buttonText) && resolvedButtonHref;
 
-  // При появлении карточки: запоминаем, что было в фокусе,
-  // и переводим фокус на карточку, чтобы скринридер её анонсировал
-  // и клавиатурный пользователь сразу мог с ней взаимодействовать.
-  useEffect(() => {
-    previouslyFocusedElement.current = document.activeElement as HTMLElement;
-    containerRef.current?.focus();
+  const renderPicture = () => {
+    // 1. image: путь к картинке
+    if (image && !isFailed(image)) {
+      return (
+        <img
+          className="notification-card__image"
+          src={image}
+          alt=""
+          onError={() => markFailed(image)}
+        />
+      );
+    }
 
-    return () => {
-      // При закрытии/размонтировании возвращаем фокус туда, где он был
-      previouslyFocusedElement.current?.focus?.();
-    };
-  }, []);
+    // 2. icon: путь к svg / готовый <svg> / компонент
+    if (icon) {
+      if (typeof icon === "string") {
+        if (!isFailed(icon)) {
+          return (
+            <img
+              className="notification-card__image"
+              src={icon}
+              alt=""
+              onError={() => markFailed(icon)}
+            />
+          );
+        }
+      } else if (isValidElement(icon)) {
+        return icon;
+      } else {
+        const Icon = icon as ComponentType;
+        return <Icon />;
+      }
+    }
+
+    // 3. emoji
+    if (isEmoji(emoji)) return <span>{emoji.trim()}</span>;
+
+    // 4. иконка по умолчанию
+    return renderIcon(settings.defaultIcon);
+  };
 
   // Автоматическое закрытие по таймауту
   useEffect(() => {
@@ -64,7 +96,6 @@ export default function NotificationCard({
       if (event.key === closeKey) {
         event.preventDefault();
         onClose();
-        return;
       }
     };
 
@@ -74,19 +105,15 @@ export default function NotificationCard({
 
   return (
     <div
-      ref={containerRef}
       className="notification-card"
       data-status={status}
+      role="alert"
+      aria-labelledby={titleId}
+      aria-describedby={descriptionId}
     >
       <div className="notification-card__inner">
         <div className="notification-card__icon" aria-hidden="true">
-          {imageUrl && !imageFailed ? (
-            <img src={imageUrl} alt="" onError={() => setImageFailed(true)} />
-          ) : picture.emoji ? (
-            <span>{picture.emoji}</span>
-          ) : (
-            renderIcon(settings.defaultIcon)
-          )}
+          {renderPicture()}
         </div>
         <div className="notification-card__content">
           <p id={titleId} className="notification-card__title">
@@ -107,7 +134,7 @@ export default function NotificationCard({
           className="notification-card__close"
           type="button"
           onClick={onClose}
-          aria-label={"Закрыть уведомление"}
+          aria-label="Закрыть уведомление"
         >
           {renderIcon(settings.closeIcon)}
         </button>

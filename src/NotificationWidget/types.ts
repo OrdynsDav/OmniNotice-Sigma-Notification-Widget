@@ -1,4 +1,4 @@
-import type { ComponentType } from "react";
+import type { ComponentType, ReactElement } from "react";
 
 export interface NotificationSettings {
   maxVisible: number;
@@ -12,10 +12,11 @@ export interface NotificationSettings {
 }
 
 export interface NotificationPicture {
-  main?: string;
-  preview?: string;
-  cover?: string;
-  icon?: string;
+  /** Путь к картинке */
+  image?: string;
+  /** Компонент с svg, готовый <svg>…</svg> или путь к svg-файлу */
+  icon?: ComponentType | ReactElement | string;
+  /** Эмодзи */
   emoji?: string;
 }
 

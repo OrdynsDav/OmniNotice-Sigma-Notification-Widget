@@ -1,4 +1,3 @@
-import "./App.css";
 import { useRef, useState } from "react";
 import NotificationWidget from "./NotificationWidget/Widget/NotificationWidget";
 import { NotificationWidgetHandle } from "./NotificationWidget/types";
@@ -14,14 +13,26 @@ function App() {
       title: `Новое уведомление ${counter}`,
       description: "У вас есть новое сообщение, требующее внимания.",
       picture: {
-        icon: "",
+        icon: "⚠️",
       },
       buttonText: "Посмотреть",
     });
   };
 
   return (
-    <div>
+    <div
+      style={{
+        backgroundImage: 'url("/public/bg.png")',
+        backgroundSize: "cover",
+        backgroundRepeat: "no-repeat",
+        minHeight: "100vh",
+        display: "flex",
+        flexDirection: "column",
+        width: "100%",
+        margin: 0,
+        padding: 0,
+      }}
+    >
       <button
         style={{
           background: "blue",
@@ -38,9 +49,12 @@ function App() {
       >
         Показать уведомление
       </button>
-      <NotificationWidget ref={listRef} settings={{
-        autoCloseMs: 0
-      }}/>
+      <NotificationWidget
+        ref={listRef}
+        settings={{
+          autoCloseMs: 0,
+        }}
+      />
     </div>
   );
 }
