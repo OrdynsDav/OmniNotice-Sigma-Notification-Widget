@@ -11,8 +11,8 @@ const notificationSettings: NotificationSettings = {
   },
   closeButtonEnabled: true,
   autoCloseMs: 0,
-  defaultIcon: BellRing,
-  closeIcon: CloseIcon,
+  defaultIcon: <BellRing />,
+  closeIcon: <CloseIcon />,
 };
 
 export default notificationSettings;

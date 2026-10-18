@@ -1,4 +1,8 @@
-import type { ComponentType, ReactElement } from "react";
+import type { ComponentType, ReactNode } from "react";
+
+export type NotificationIcon =
+  | ReactNode
+  | ComponentType<{ className?: string }>;
 
 export type CloseKeyScope = "global" | "focused" | "off";
 
@@ -19,8 +23,8 @@ export interface NotificationSettings {
   closeKeyboard: CloseKeyboardSettings;
   closeButtonEnabled: boolean;
   autoCloseMs: number;
-  defaultIcon: ComponentType;
-  closeIcon: ComponentType;
+  defaultIcon: NotificationIcon;
+  closeIcon: NotificationIcon;
 }
 
 /**
@@ -62,7 +66,7 @@ export interface NotificationPicture {
   /** Обложка, если нет main и preview или они не загрузились */
   cover?: string;
   /** Компонент с svg, готовый <svg>…</svg> или путь к svg-файлу */
-  icon?: ComponentType | ReactElement | string;
+  icon?: NotificationIcon;
   /** Эмодзи */
   emoji?: string;
 }

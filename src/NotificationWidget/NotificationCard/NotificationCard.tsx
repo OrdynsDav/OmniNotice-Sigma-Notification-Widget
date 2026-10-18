@@ -1,6 +1,4 @@
 import {
-  ComponentType,
-  isValidElement,
   useEffect,
   useId,
   useMemo,
@@ -11,9 +9,9 @@ import type { NotificationCardProps, NotificationSettings } from "../types";
 import notificationSettings from "../config/notification.config";
 import { renderIcon } from "../helpers/renderIcon";
 import "./NotificationCard.css";
-import { isEmoji } from "../helpers/isEmoji";
 import { omni } from "../helpers/omni";
 import { resolveSettings } from "../helpers/resolveSettings";
+import { renderNotificationPicture } from "../helpers/renderNotificationPicture";
 
 type NotificationCardComponentProps = NotificationCardProps & {
   /** Глобальные настройки виджета (по умолчанию из конфига) */
@@ -41,61 +39,12 @@ export default function NotificationCard({
   const titleId = useId();
   const descriptionId = useId();
 
-  const { main, preview, cover, icon, emoji } = picture;
-
   // Пути, которые не загрузились: для них идём дальше по цепочке.
   // Хранится URL, поэтому при смене пути ошибка сбрасывается сама.
   const [failedUrls, setFailedUrls] = useState<string[]>([]);
   const markFailed = (url: string) =>
     setFailedUrls((prev) => (prev.includes(url) ? prev : [...prev, url]));
-  const isFailed = (url: string) => failedUrls.includes(url);
-
   const hasButton = Boolean(action) && resolvedButtonHref;
-
-  const renderPicture = () => {
-    // 1. main => preview => cover: первая непустая и не упавшая картинка
-    const imageSrc = [main, preview, cover].find(
-      (url) => url !== undefined && url !== "" && !isFailed(url),
-    );
-
-    if (imageSrc) {
-      return (
-        <img
-          className={omni("notification-card__image")}
-          src={imageSrc}
-          alt=""
-          onError={() => markFailed(imageSrc)}
-        />
-      );
-    }
-
-    // 2. icon: путь к svg / готовый <svg> / компонент
-    if (icon) {
-      if (typeof icon === "string") {
-        if (!isFailed(icon)) {
-          return (
-            <img
-              className={omni("notification-card__image")}
-              src={icon}
-              alt=""
-              onError={() => markFailed(icon)}
-            />
-          );
-        }
-      } else if (isValidElement(icon)) {
-        return icon;
-      } else {
-        const Icon = icon as ComponentType;
-        return <Icon />;
-      }
-    }
-
-    // 3. emoji
-    if (isEmoji(emoji)) return <span>{emoji.trim()}</span>;
-
-    // 4. иконка по умолчанию
-    return renderIcon(settings.defaultIcon);
-  };
 
   // Автоматическое закрытие по таймауту
   useEffect(() => {
@@ -144,7 +93,12 @@ export default function NotificationCard({
     >
       <div className={omni("notification-card__inner")}>
         <div className={omni("notification-card__icon")} aria-hidden="true">
-          {renderPicture()}
+          {renderNotificationPicture({
+            picture,
+            failedUrls,
+            defaultIcon: settings.defaultIcon,
+            onImageError: markFailed,
+          })}
         </div>
         <div className={omni("notification-card__content")}>
           <p id={titleId} className={omni("notification-card__title")}>
@@ -173,7 +127,9 @@ export default function NotificationCard({
           onClick={onClose}
           aria-label="Закрыть уведомление"
         >
-          {renderIcon(settings.closeIcon)}
+          {renderIcon(settings.closeIcon, {
+            className: omni("notification-card__close-icon"),
+          })}
         </button>
       )}
     </div>

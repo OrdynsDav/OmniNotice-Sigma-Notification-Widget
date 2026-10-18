@@ -14,8 +14,9 @@ function Demo() {
       title: `Новое уведомление ${counter}`,
       description: "У вас есть новое сообщение, требующее внимания.",
       picture: {
-        cover: "https://avatars.mds.yandex.net/i?id=35ea9f0fc6e83d112a951a989af2f7bc_l-6262780-images-thumbs&n=13",
-     },
+        cover:
+          "https://avatars.mds.yandex.net/i?id=35ea9f0fc6e83d112a951a989af2f7bc_l-6262780-images-thumbs&n=13",
+      },
       action: {
         title: "Посмотреть",
         url: "#",
@@ -59,10 +60,12 @@ function Demo() {
 
 function App() {
   return (
-    <NotificationProvider settings={{
-      maxVisible: 3,
-      autoCloseMs: 0
-    }}>
+    <NotificationProvider
+      settings={{
+        maxVisible: 3,
+        autoCloseMs: 0,
+      }}
+    >
       <Demo />
     </NotificationProvider>
   );

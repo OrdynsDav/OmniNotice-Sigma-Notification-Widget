@@ -153,8 +153,8 @@ widgetRef.current?.remove("upload-status");
 | `closeWithKeyboard`  | `string`        | `"Escape"`       | Значение `event.key`, по которому закрываются карточки. Пустая строка отключает.                |
 | `closeButtonEnabled` | `boolean`       | `true`           | Показывать ли кнопку-крестик.                                                                   |
 | `buttonHref`         | `string`        | `"/notifications"` | Ссылка по умолчанию для кнопки действия. Переопределяется полем `buttonHref` уведомления.     |
-| `defaultIcon`        | `ComponentType` | встроенная       | Иконка, если у уведомления нет подходящей картинки, иконки или эмодзи.                          |
-| `closeIcon`          | `ComponentType` | встроенная       | Иконка кнопки закрытия.                                                                         |
+| `defaultIcon`        | `ReactNode \| ComponentType` | встроенная | Иконка, если у уведомления нет подходящей картинки, иконки или эмодзи. Можно передать JSX-элемент с пропсами. |
+| `closeIcon`          | `ReactNode \| ComponentType` | встроенная | Иконка кнопки закрытия. Можно передать JSX-элемент с пропсами. |
 
 Важно:
 
@@ -175,18 +175,46 @@ widgetRef.current?.remove("upload-status");
 
 ### Свои иконки
 
-`defaultIcon` и `closeIcon` принимают обычные React-компоненты без пропсов:
+`defaultIcon` и `closeIcon` принимают React-компонент или готовый JSX-элемент. Чтобы передать собственные пропсы иконке, используйте JSX:
 
 ```tsx
-import type { ComponentType } from "react";
+function BellIcon({ size, color }: { size: number; color: string }) {
+  return (
+    <svg
+      viewBox="0 0 24 24"
+      width={size}
+      height={size}
+      color={color}
+      aria-hidden="true"
+    >
+      <path d="M12 22a2 2 0 0 0 2-2h-4a2 2 0 0 0 2 2zm6-6V11a6 6 0 0 0-5-5.9V4a1 1 0 0 0-2 0v1.1A6 6 0 0 0 6 11v5l-2 2v1h16v-1l-2-2z" />
+    </svg>
+  );
+}
 
-const BellIcon: ComponentType = () => (
-  <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
-    <path d="M12 22a2 2 0 0 0 2-2h-4a2 2 0 0 0 2 2zm6-6V11a6 6 0 0 0-5-5.9V4a1 1 0 0 0-2 0v1.1A6 6 0 0 0 6 11v5l-2 2v1h16v-1l-2-2z" />
-  </svg>
-);
+function CloseIcon({ size, color }: { size: number; color: string }) {
+  return (
+    <svg
+      viewBox="0 0 10 10"
+      width={size}
+      height={size}
+      aria-hidden="true"
+    >
+      <path
+        d="M1 1l8 8M9 1L1 9"
+        stroke={color}
+        strokeLinecap="round"
+      />
+    </svg>
+  );
+}
 
-<NotificationWidget settings={{ defaultIcon: BellIcon }} />;
+<NotificationWidget
+  settings={{
+    defaultIcon: <BellIcon size={20} color="tomato" />,
+    closeIcon: <CloseIcon size={12} color="gray" />,
+  }}
+/>;
 ```
 
 ## Формат уведомления

@@ -1,17 +1,26 @@
-import { ComponentType, isValidElement, ReactNode } from "react";
+import {
+  cloneElement,
+  isValidElement,
+  type ReactNode,
+} from "react";
+import type { NotificationIcon } from "../types";
 
-export function renderIcon(Icon: ReactNode | ComponentType): ReactNode {
-    // Уже готовый JSX-элемент (например, инлайновый <svg />) - рендерим как есть
-    if (isValidElement(Icon)) {
-        return Icon;
-    }
+export function renderIcon(
+  Icon: NotificationIcon,
+  props: { className?: string } = {},
+): ReactNode {
+  if (isValidElement<{ className?: string }>(Icon)) {
+    const className = [Icon.props.className, props.className]
+      .filter(Boolean)
+      .join(" ");
 
-    // Компонент (function/class) — рендерим через JSX
-    if (typeof Icon === "function") {
-        const IconComponent = Icon as ComponentType;
-        return <IconComponent />;
-    }
+    return cloneElement(Icon, { ...props, className });
+  }
 
-    // Любой другой ReactNode (строка, число, null, массив и т.д.)
-    return Icon as ReactNode;
+  if (typeof Icon === "function") {
+    const IconComponent = Icon;
+    return <IconComponent {...props} />;
+  }
+
+  return Icon;
 }

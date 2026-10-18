@@ -1,4 +1,6 @@
-export function CloseIcon() {
+import type { SVGProps } from "react";
+
+export function CloseIcon(props: SVGProps<SVGSVGElement>) {
   return (
     <svg
       width="10"
@@ -8,6 +10,7 @@ export function CloseIcon() {
       xmlns="http://www.w3.org/2000/svg"
       aria-hidden="true"
       focusable="false"
+      {...props}
     >
       <path
         d="M0.5 0.5L5 5M5 5L0.5 9.5M5 5L9.5 9.5M5 5L9.5 0.5"

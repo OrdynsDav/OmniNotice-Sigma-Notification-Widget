@@ -1,41 +1,11 @@
 import { useLayoutEffect, useRef, type CSSProperties } from "react";
 import NotificationCard from "../NotificationCard/NotificationCard";
 import { useNotificationState } from "../context/NotificationContext";
-import type {
-  NotificationItemOverrides,
-  NotificationSettings,
-} from "../types";
 import "./NotificationWidget.css";
 import { omni } from "../helpers/omni";
-
-/** Глобальный конфиг + настройки уведомления; undefined в override игнорируются */
-function resolveItemSettings(
-  base: NotificationSettings,
-  override?: NotificationItemOverrides,
-): NotificationSettings {
-  if (!override) return base;
-
-  const result = { ...base } as NotificationSettings & Record<string, unknown>;
-
-  const { closeKeyboard, ...rest } = override;
-
-  Object.entries(rest).forEach(([key, value]) => {
-    if (value !== undefined) {
-      result[key] = value;
-    }
-  });
-
-  if (closeKeyboard) {
-    result.closeKeyboard = {
-      ...base.closeKeyboard,
-      ...Object.fromEntries(
-        Object.entries(closeKeyboard).filter(([, value]) => value !== undefined),
-      ),
-    };
-  }
-
-  return result;
-}
+import { resolveItemSettings } from "../helpers/resolveItemSettings";
+import { animateNotificationFlip } from "../helpers/animateNotificationFlip";
+import { ErrorBoundary } from "react-error-boundary";
 
 /**
  * Только отображение. Всё управление (add/update/remove/clear)
@@ -47,43 +17,11 @@ export default function NotificationWidget() {
   const containerRef = useRef<HTMLDivElement>(null);
   const positionsRef = useRef<Map<string, DOMRect>>(new Map());
 
-  // FLIP-анимация: при изменении списка карточки плавно "доезжают"
   useLayoutEffect(() => {
-    const container = containerRef.current;
-    if (!container) {
-      positionsRef.current = new Map();
-      return;
-    }
-
-    const newPositions = new Map<string, DOMRect>();
-    const children = Array.from(
-      container.querySelectorAll<HTMLElement>("[data-notification-id]"),
+    positionsRef.current = animateNotificationFlip(
+      containerRef.current,
+      positionsRef.current,
     );
-
-    children.forEach((child) => {
-      const id = child.dataset.notificationId as string;
-      newPositions.set(id, child.getBoundingClientRect());
-    });
-
-    children.forEach((child) => {
-      const id = child.dataset.notificationId as string;
-      const oldRect = positionsRef.current.get(id);
-      const newRect = newPositions.get(id);
-      if (!oldRect || !newRect) return;
-
-      const deltaY = oldRect.top - newRect.top;
-      if (deltaY === 0) return;
-
-      child.style.transition = "none";
-      child.style.transform = `translateY(${deltaY}px)`;
-
-      requestAnimationFrame(() => {
-        child.style.transition = "";
-        child.style.transform = "";
-      });
-    });
-
-    positionsRef.current = newPositions;
   }, [items]);
 
   if (items.length === 0) return null;
@@ -114,7 +52,19 @@ export default function NotificationWidget() {
               } as CSSProperties
             }
           >
-            <NotificationCard {...item} settings={itemSettings} />
+            <ErrorBoundary
+              resetKeys={[item]}
+              fallbackRender={() => null}
+              onError={(error, info) => {
+                console.error(
+                  `Notification "${item.id}" crashed.`,
+                  error,
+                  info.componentStack,
+                );
+              }}
+            >
+              <NotificationCard {...item} settings={itemSettings} />
+            </ErrorBoundary>
           </div>
         );
       })}
