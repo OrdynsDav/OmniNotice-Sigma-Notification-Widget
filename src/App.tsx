@@ -1,28 +1,32 @@
-import { useRef, useState } from "react";
-import NotificationWidget from "./NotificationWidget/Widget/NotificationWidget";
-import { NotificationWidgetHandle } from "./NotificationWidget/types";
+import { useState } from "react";
+import { useNotification } from "./NotificationWidget/context/NotificationContext";
+import { NotificationProvider } from "./NotificationWidget/provider/NotificationProvider";
 
-function App() {
-  const listRef = useRef<NotificationWidgetHandle>(null);
+function Demo() {
+  const { add } = useNotification();
   const [counter, setCounter] = useState(1);
 
   const showNotification = () => {
     setCounter((prev) => prev + 1);
-    listRef.current?.add({
+    add({
+      role: "alert",
       status: "unread",
       title: `Новое уведомление ${counter}`,
       description: "У вас есть новое сообщение, требующее внимания.",
       picture: {
-        icon: "⚠️",
+        cover: "https://avatars.mds.yandex.net/i?id=35ea9f0fc6e83d112a951a989af2f7bc_l-6262780-images-thumbs&n=13",
+     },
+      action: {
+        title: "Посмотреть",
+        url: "#",
       },
-      buttonText: "Посмотреть",
     });
   };
 
   return (
     <div
       style={{
-        backgroundImage: 'url("/public/bg.png")',
+        backgroundImage: 'url("/bg.png")',
         backgroundSize: "cover",
         backgroundRepeat: "no-repeat",
         minHeight: "100vh",
@@ -49,13 +53,18 @@ function App() {
       >
         Показать уведомление
       </button>
-      <NotificationWidget
-        ref={listRef}
-        settings={{
-          autoCloseMs: 0,
-        }}
-      />
     </div>
+  );
+}
+
+function App() {
+  return (
+    <NotificationProvider settings={{
+      maxVisible: 3,
+      autoCloseMs: 0
+    }}>
+      <Demo />
+    </NotificationProvider>
   );
 }
 

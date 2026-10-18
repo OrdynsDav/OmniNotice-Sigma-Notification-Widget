@@ -1,12 +1,23 @@
-import { ComponentType, isValidElement, useEffect, useId, useState } from "react";
+import {
+  ComponentType,
+  isValidElement,
+  useEffect,
+  useId,
+  useMemo,
+  useState,
+} from "react";
+import type { KeyboardEvent as ReactKeyboardEvent } from "react";
 import type { NotificationCardProps, NotificationSettings } from "../types";
-import notificationSettings from "../notification.config";
+import notificationSettings from "../config/notification.config";
 import { renderIcon } from "../helpers/renderIcon";
 import "./NotificationCard.css";
 import { isEmoji } from "../helpers/isEmoji";
+import { omni } from "../helpers/omni";
+import { resolveSettings } from "../helpers/resolveSettings";
 
 type NotificationCardComponentProps = NotificationCardProps & {
-  settings?: NotificationSettings;
+  /** Глобальные настройки виджета (по умолчанию из конфига) */
+  baseSettings?: NotificationSettings;
 };
 
 export default function NotificationCard({
@@ -14,16 +25,23 @@ export default function NotificationCard({
   status,
   description,
   picture,
-  buttonText,
-  buttonHref,
+  action,
   onClose,
-  settings = notificationSettings,
+  settings: overrides,
+  baseSettings = notificationSettings,
+  role = "status",
 }: NotificationCardComponentProps) {
-  const resolvedButtonHref = buttonHref ?? settings.buttonHref;
+  const settings = useMemo(
+    () => resolveSettings(baseSettings, overrides),
+    [baseSettings, overrides],
+  );
+  const { key: closeKey, scope: closeScope } = settings.closeKeyboard;
+
+  const resolvedButtonHref = action?.url;
   const titleId = useId();
   const descriptionId = useId();
 
-  const { image, icon, emoji } = picture;
+  const { main, preview, cover, icon, emoji } = picture;
 
   // Пути, которые не загрузились: для них идём дальше по цепочке.
   // Хранится URL, поэтому при смене пути ошибка сбрасывается сама.
@@ -32,17 +50,21 @@ export default function NotificationCard({
     setFailedUrls((prev) => (prev.includes(url) ? prev : [...prev, url]));
   const isFailed = (url: string) => failedUrls.includes(url);
 
-  const hasButton = Boolean(buttonText) && resolvedButtonHref;
+  const hasButton = Boolean(action) && resolvedButtonHref;
 
   const renderPicture = () => {
-    // 1. image: путь к картинке
-    if (image && !isFailed(image)) {
+    // 1. main => preview => cover: первая непустая и не упавшая картинка
+    const imageSrc = [main, preview, cover].find(
+      (url) => url !== undefined && url !== "" && !isFailed(url),
+    );
+
+    if (imageSrc) {
       return (
         <img
-          className="notification-card__image"
-          src={image}
+          className={omni("notification-card__image")}
+          src={imageSrc}
           alt=""
-          onError={() => markFailed(image)}
+          onError={() => markFailed(imageSrc)}
         />
       );
     }
@@ -53,7 +75,7 @@ export default function NotificationCard({
         if (!isFailed(icon)) {
           return (
             <img
-              className="notification-card__image"
+              className={omni("notification-card__image")}
               src={icon}
               alt=""
               onError={() => markFailed(icon)}
@@ -87,51 +109,66 @@ export default function NotificationCard({
     return () => window.clearTimeout(timer);
   }, [onClose, settings.autoCloseMs]);
 
-  // Закрытие по кнопке с клавиатуры
+  // Закрытие клавишей, scope: "global" — слушаем весь документ
   useEffect(() => {
-    const closeKey = settings.closeWithKeyboard;
-    if (!closeKey) return;
+    if (closeScope !== "global" || !closeKey) return;
 
     const handleKeyDown = (event: KeyboardEvent) => {
-      if (event.key === closeKey) {
-        event.preventDefault();
-        onClose();
-      }
+      // Если клавишу уже обработал кто-то другой (модалка, dropdown) — не трогаем
+      if (event.defaultPrevented || event.key !== closeKey) return;
+      event.preventDefault();
+      onClose();
     };
 
     document.addEventListener("keydown", handleKeyDown);
     return () => document.removeEventListener("keydown", handleKeyDown);
-  }, [onClose, settings.closeWithKeyboard]);
+  }, [onClose, closeKey, closeScope]);
+
+  // Закрытие клавишей, scope: "focused" — только когда фокус внутри карточки
+  const handleCardKeyDown = (event: ReactKeyboardEvent<HTMLDivElement>) => {
+    if (closeScope !== "focused" || !closeKey || event.key !== closeKey) return;
+    event.preventDefault();
+    event.stopPropagation();
+    onClose();
+  };
 
   return (
     <div
-      className="notification-card"
+      className={omni("notification-card")}
       data-status={status}
-      role="alert"
+      role={role ?? "status"}
       aria-labelledby={titleId}
       aria-describedby={descriptionId}
+      tabIndex={closeScope === "focused" ? -1 : undefined}
+      onKeyDown={handleCardKeyDown}
     >
-      <div className="notification-card__inner">
-        <div className="notification-card__icon" aria-hidden="true">
+      <div className={omni("notification-card__inner")}>
+        <div className={omni("notification-card__icon")} aria-hidden="true">
           {renderPicture()}
         </div>
-        <div className="notification-card__content">
-          <p id={titleId} className="notification-card__title">
+        <div className={omni("notification-card__content")}>
+          <p id={titleId} className={omni("notification-card__title")}>
             {title}
           </p>
-          <p id={descriptionId} className="notification-card__description">
+          <p
+            id={descriptionId}
+            className={omni("notification-card__description")}
+          >
             {description}
           </p>
           {hasButton && (
-            <a href={resolvedButtonHref} className="notification-card__button">
-              {buttonText}
+            <a
+              href={resolvedButtonHref}
+              className={omni("notification-card__button")}
+            >
+              {action?.title}
             </a>
           )}
         </div>
       </div>
       {settings.closeButtonEnabled && (
         <button
-          className="notification-card__close"
+          className={omni("notification-card__close")}
           type="button"
           onClick={onClose}
           aria-label="Закрыть уведомление"

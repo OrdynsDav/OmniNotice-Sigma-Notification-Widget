@@ -1,289 +1,320 @@
-.notification-card {
-    --omni-nf-font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Arial, sans-serif;
+.omni-notification-card {
+  --omni-nf-font-family: var(
+    --font-family-base,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    Roboto,
+    Arial,
+    sans-serif
+  );
 
-    --omni-nf-color-title: #0C151D;
-    --omni-nf-color-description: #767A7F;
-    --omni-nf-color-icon-bg: #D1DEFF;
-    --omni-nf-color-icon: #487BFE;
-    --omni-nf-color-button-bg: #487BFE;
-    --omni-nf-color-button-bg-hover: #3566E0;
-    --omni-nf-color-button-text: #FFFFFF;
-    --omni-nf-color-close-icon: #12233F;
-    --omni-nf-color-close-bg-hover: #F2F4F7;
-    --omni-nf-color-focus-ring: #487BFE;
+  --omni-nf-color-base: var(--color-primary, #487bfe);
+  --omni-nf-color-title: var(--color-text-primary, #0c151d);
+  --omni-nf-color-description: var(--color-text-secondary, #767a7f);
+  --omni-nf-color-icon: var(--omni-nf-color-base, #487bfe);
+  --omni-nf-color-icon-bg: #d1deff;
+  --omni-nf-color-button-bg: var(--omni-nf-color-base, #487bfe);
+  --omni-nf-color-button-bg-hover: hsl(
+    from var(--omni-nf-color-base) h s calc(l - 10)
+  );
+  --omni-nf-color-button-text: #ffffff;
+  --omni-nf-color-close-icon: #12233f;
+  --omni-nf-color-close-bg-hover: #f2f4f7;
+  --omni-nf-color-focus-ring: var(--omni-nf-color-base, #487bfe);
 
-    --omni-nf-focus-ring-width: 2px;
-    --omni-nf-focus-ring-offset: 2px;
+  --omni-nf-focus-ring-width: 2px;
+  --omni-nf-focus-ring-offset: 2px;
 
-    --omni-nf-font-size-title: 18px;
-    --omni-nf-font-size-description: 16px;
-    --omni-nf-font-size-button: 14px;
+  --omni-nf-font-size-title: 18px;
+  --omni-nf-font-size-description: 16px;
+  --omni-nf-font-size-button: 14px;
 
-    --omni-nf-border-radius: 12px;
+  --omni-nf-border-radius-lg: var(--radius-lg, 12px);
+  --omni-nf-border-radius-md: var(--radius-md, 8px);
 
-    --omni-nf-line-height-text: 20px;
+  --omni-nf-line-height-text: 20px;
 
-    --omni-nf-spacing-icon-size: 56px;
-    --omni-nf-spacing-inner-gap: 16px;
-    --omni-nf-spacing-close-size: 24px;
+  --omni-nf-spacing-icon-size: 56px;
+  --omni-nf-spacing-inner-gap: 16px;
+  --omni-nf-spacing-close-size: 24px;
 
-    --omni-nf-transition-duration: 0.15s;
-    --omni-nf-transition-easing: ease;
+  --omni-nf-transition-duration: 0.15s;
+  --omni-nf-transition-easing: ease;
 
-    --omni-nf-animation-duration: 0.3s;
-    --omni-nf-animation-easing: cubic-bezier(0.16, 1, 0.3, 1);
-    --omni-nf-animation-distance: 40px;
+  --omni-nf-animation-duration: 0.3s;
+  --omni-nf-animation-easing: cubic-bezier(0.16, 1, 0.3, 1);
+  --omni-nf-animation-distance: 40px;
 
-    all: initial;
-    box-sizing: border-box;
-    font-family: var(--omni-nf-font-family);
+  all: initial;
+  box-sizing: border-box;
+  font-family: var(--omni-nf-font-family);
 
-    display: block;
-    width: 100%;
-    position: relative;
-    padding: 16px 20px;
-    border-radius: var(--omni-nf-border-radius);
-    background-color: #FFFFFF;
-    box-shadow: 0px 0px 1px 0px #0C0C0D4D;
+  display: block;
+  width: 100%;
+  position: relative;
+  padding: 16px 20px;
+  border-radius: var(--omni-nf-border-radius-lg);
+  background-color: #ffffff;
+  box-shadow: 0px 0px 1px 0px #0c0c0d4d;
 
-    animation: omni-nf-slide-in var(--omni-nf-animation-duration) var(--omni-nf-animation-easing) both;
-    -webkit-animation: omni-nf-slide-in var(--omni-nf-animation-duration) var(--omni-nf-animation-easing) both;
-
+  animation: omni-nf-slide-in var(--omni-nf-animation-duration)
+    var(--omni-nf-animation-easing) both;
+  -webkit-animation: omni-nf-slide-in var(--omni-nf-animation-duration)
+    var(--omni-nf-animation-easing) both;
+  /*border-bottom: 3px solid var(--omni-nf-color-base);*/
 }
 
-.notification-card *,
-.notification-card *::before,
-.notification-card *::after {
-    -webkit-box-sizing: border-box;
-    -moz-box-sizing: border-box;
-    box-sizing: border-box;
+@supports (background: color-mix(in srgb, #487bfe 25%, white)) {
+  .omni-notification-card {
+    --omni-nf-color-icon-bg: color-mix(
+      in srgb,
+      var(--omni-nf-color-icon) 25%,
+      white
+    );
+  }
 }
 
-.notification-card__inner {
-    display: -webkit-box;
-    display: -webkit-flex;
-    display: -ms-flexbox;
-    display: flex;
-    -webkit-box-align: start;
-    -webkit-align-items: flex-start;
-    -ms-flex-align: start;
-    align-items: flex-start;
-    /* gap во flex не поддерживается в Safari < 14.1 и старом Firefox.
+.omni-notification-card *,
+.omni-notification-card *::before,
+.omni-notification-card *::after {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box;
+}
+
+.omni-notification-card__inner {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: start;
+  -webkit-align-items: flex-start;
+  -ms-flex-align: start;
+  align-items: flex-start;
+  /* gap во flex не поддерживается в Safari < 14.1 и старом Firefox.
        Дублируется отступом на дочерних элементах через margin-left */
-    gap: var(--omni-nf-spacing-inner-gap);
+  gap: var(--omni-nf-spacing-inner-gap);
 }
 
-.notification-card__inner > * + * {
-    margin-left: var(--omni-nf-spacing-inner-gap);
+.omni-notification-card__inner > * + * {
+  margin-left: var(--omni-nf-spacing-inner-gap);
 }
 
 @supports (gap: 1px) {
-    .notification-card__inner > * + * {
-        margin-left: 0;
-    }
+  .omni-notification-card__inner > * + * {
+    margin-left: 0;
+  }
 }
 
-.notification-card__icon {
-    display: -webkit-box;
-    display: -webkit-flex;
-    display: -ms-flexbox;
-    display: flex;
-    -webkit-box-pack: center;
-    -webkit-justify-content: center;
-    -ms-flex-pack: center;
-    justify-content: center;
-    -webkit-box-align: center;
-    -webkit-align-items: center;
-    -ms-flex-align: center;
-    align-items: center;
-    width: var(--omni-nf-spacing-icon-size);
-    height: var(--omni-nf-spacing-icon-size);
-    -webkit-border-radius: var(--omni-nf-border-radius);
-    border-radius: var(--omni-nf-border-radius);
-    background-color: var(--omni-nf-color-icon-bg);
-    -webkit-flex-shrink: 0;
-    -ms-flex-negative: 0;
-    flex-shrink: 0;
+.omni-notification-card__icon {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+  -ms-flex-align: center;
+  align-items: center;
+  width: var(--omni-nf-spacing-icon-size);
+  height: var(--omni-nf-spacing-icon-size);
+  -webkit-border-radius: var(--omni-nf-border-radius-lg);
+  border-radius: var(--omni-nf-border-radius-lg);
+  background-color: var(--omni-nf-color-icon-bg);
+  -webkit-flex-shrink: 0;
+  -ms-flex-negative: 0;
+  flex-shrink: 0;
 }
 
-.notification-card__icon svg {
-    color: var(--omni-nf-color-icon);
-    display: block;
+.omni-notification-card__icon svg {
+  color: var(--omni-nf-color-icon);
+  display: block;
 }
 
-.notification-card__icon img {
-    display: block;
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    border-radius: inherit;
+.omni-notification-card__icon img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: inherit;
 }
 
-.notification-card__icon span {
-    font-size: 28px;
-    line-height: 1;
+.omni-notification-card__icon span {
+  font-size: 28px;
+  line-height: 1;
 }
 
-.notification-card__content {
-    display: -webkit-box;
-    display: -webkit-flex;
-    display: -ms-flexbox;
-    display: flex;
-    -webkit-box-orient: vertical;
-    -webkit-box-direction: normal;
-    -webkit-flex-direction: column;
-    -ms-flex-direction: column;
-    flex-direction: column;
-    min-width: 0;
+.omni-notification-card__content {
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-orient: vertical;
+  -webkit-box-direction: normal;
+  -webkit-flex-direction: column;
+  -ms-flex-direction: column;
+  flex-direction: column;
+  min-width: 0;
 }
 
-.notification-card__title {
-    margin: 0 0 4px;
-    color: var(--omni-nf-color-title);
-    font-size: var(--omni-nf-font-size-title);
-    font-weight: 500;
-    line-height: var(--omni-nf-line-height-text);
+.omni-notification-card__title {
+  margin: 0 0 4px;
+  color: var(--omni-nf-color-title);
+  font-size: var(--omni-nf-font-size-title);
+  font-weight: 500;
+  line-height: var(--omni-nf-line-height-text);
 }
 
-.notification-card__description {
-    margin: 0;
-    color: var(--omni-nf-color-description);
-    font-size: var(--omni-nf-font-size-description);
-    line-height: var(--omni-nf-line-height-text);
+.omni-notification-card__description {
+  margin: 0;
+  color: var(--omni-nf-color-description);
+  font-size: var(--omni-nf-font-size-description);
+  line-height: var(--omni-nf-line-height-text);
 }
 
-.notification-card__button {
-    display: inline-block;
-    -webkit-align-self: flex-start;
-    -ms-flex-item-align: start;
-    align-self: flex-start;
-    margin-top: 12px;
-    padding: 8px 16px;
-    background-color: var(--omni-nf-color-button-bg);
-    color: var(--omni-nf-color-button-text);
-    font-size: var(--omni-nf-font-size-button);
-    font-family: inherit;
-    line-height: var(--omni-nf-line-height-text);
-    -webkit-border-radius: 8px;
-    border-radius: 8px;
-    text-decoration: none;
-    max-width: -webkit-fit-content;
-    max-width: -moz-fit-content;
-    max-width: fit-content;
-    border: none;
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-    cursor: pointer;
-    -webkit-tap-highlight-color: transparent;
-    -webkit-transition: background-color var(--omni-nf-transition-duration) var(--omni-nf-transition-easing);
-    -o-transition: background-color var(--omni-nf-transition-duration) var(--omni-nf-transition-easing);
-    transition: background-color var(--omni-nf-transition-duration) var(--omni-nf-transition-easing);
+.omni-notification-card__button {
+  display: inline-block;
+  -webkit-align-self: flex-start;
+  -ms-flex-item-align: start;
+  align-self: flex-start;
+  margin-top: 12px;
+  padding: 8px 16px;
+  background-color: var(--omni-nf-color-button-bg);
+  color: var(--omni-nf-color-button-text);
+  font-size: var(--omni-nf-font-size-button);
+  font-family: inherit;
+  line-height: var(--omni-nf-line-height-text);
+  -webkit-border-radius: var(--omni-nf-border-radius-md);
+  border-radius: var(--omni-nf-border-radius-md);
+  text-decoration: none;
+  max-width: -webkit-fit-content;
+  max-width: -moz-fit-content;
+  max-width: fit-content;
+  border: none;
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-transition: background-color var(--omni-nf-transition-duration)
+    var(--omni-nf-transition-easing);
+  -o-transition: background-color var(--omni-nf-transition-duration)
+    var(--omni-nf-transition-easing);
+  transition: background-color var(--omni-nf-transition-duration)
+    var(--omni-nf-transition-easing);
 }
 
-.notification-card__button:hover {
-    background-color: var(--omni-nf-color-button-bg-hover);
+.omni-notification-card__button:hover {
+  background-color: var(--omni-nf-color-button-bg-hover);
 }
 
-.notification-card__button:focus {
-    outline: none;
+.omni-notification-card__button:focus {
+  outline: none;
 }
 
-.notification-card__button:focus-visible {
-    outline: var(--omni-nf-focus-ring-width) solid var(--omni-nf-color-focus-ring);
-    outline-offset: var(--omni-nf-focus-ring-offset);
+.omni-notification-card__button:focus-visible {
+  outline: var(--omni-nf-focus-ring-width) solid var(--omni-nf-color-focus-ring);
+  outline-offset: var(--omni-nf-focus-ring-offset);
 }
 
-.notification-card__close {
-    position: absolute;
-    top: 8px;
-    right: 8px;
-    width: var(--omni-nf-spacing-close-size);
-    height: var(--omni-nf-spacing-close-size);
-    display: -webkit-box;
-    display: -webkit-flex;
-    display: -ms-flexbox;
-    display: flex;
-    -webkit-box-align: center;
-    -webkit-align-items: center;
-    -ms-flex-align: center;
-    align-items: center;
-    -webkit-box-pack: center;
-    -webkit-justify-content: center;
-    -ms-flex-pack: center;
-    justify-content: center;
-    background: none;
-    border: none;
-    -webkit-border-radius: 6px;
-    border-radius: 6px;
-    cursor: pointer;
-    padding: 0;
-    color: var(--omni-nf-color-close-icon);
-    -webkit-appearance: none;
-    -moz-appearance: none;
-    appearance: none;
-    -webkit-tap-highlight-color: transparent;
-    -webkit-transition: background-color var(--omni-nf-transition-duration) var(--omni-nf-transition-easing);
-    -o-transition: background-color var(--omni-nf-transition-duration) var(--omni-nf-transition-easing);
-    transition: background-color var(--omni-nf-transition-duration) var(--omni-nf-transition-easing);
+.omni-notification-card__close {
+  position: absolute;
+  top: 8px;
+  right: 8px;
+  width: var(--omni-nf-spacing-close-size);
+  height: var(--omni-nf-spacing-close-size);
+  display: -webkit-box;
+  display: -webkit-flex;
+  display: -ms-flexbox;
+  display: flex;
+  -webkit-box-align: center;
+  -webkit-align-items: center;
+  -ms-flex-align: center;
+  align-items: center;
+  -webkit-box-pack: center;
+  -webkit-justify-content: center;
+  -ms-flex-pack: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  -webkit-border-radius: 6px;
+  border-radius: 6px;
+  cursor: pointer;
+  padding: 0;
+  color: var(--omni-nf-color-close-icon);
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-transition: background-color var(--omni-nf-transition-duration)
+    var(--omni-nf-transition-easing);
+  -o-transition: background-color var(--omni-nf-transition-duration)
+    var(--omni-nf-transition-easing);
+  transition: background-color var(--omni-nf-transition-duration)
+    var(--omni-nf-transition-easing);
 }
 
-.notification-card__close svg {
-    pointer-events: none;
-    display: block;
+.omni-notification-card__close svg {
+  pointer-events: none;
+  display: block;
 }
 
-.notification-card__close:hover {
-    background-color: var(--omni-nf-color-close-bg-hover);
+.omni-notification-card__close:hover {
+  background-color: var(--omni-nf-color-close-bg-hover);
 }
 
-.notification-card__close:focus {
-    outline: none;
+.omni-notification-card__close:focus {
+  outline: none;
 }
 
-.notification-card__close:focus-visible {
-    outline: var(--omni-nf-focus-ring-width) solid var(--omni-nf-color-focus-ring);
-    outline-offset: var(--omni-nf-focus-ring-offset);
+.omni-notification-card__close:focus-visible {
+  outline: var(--omni-nf-focus-ring-width) solid var(--omni-nf-color-focus-ring);
+  outline-offset: var(--omni-nf-focus-ring-offset);
 }
 
 /* Фолбэк для браузеров без поддержки :focus-visible (например, старый Safari, старый Firefox) -
    тогда используем обычный :focus, чтобы клавиатурная навигация не осталась совсем без индикации */
 @supports not selector(:focus-visible) {
-    .notification-card__button:focus,
-    .notification-card__close:focus {
-        outline: var(--omni-nf-focus-ring-width) solid var(--omni-nf-color-focus-ring);
-        outline-offset: var(--omni-nf-focus-ring-offset);
-    }
+  .omni-notification-card__button:focus,
+  .omni-notification-card__close:focus {
+    outline: var(--omni-nf-focus-ring-width) solid
+      var(--omni-nf-color-focus-ring);
+    outline-offset: var(--omni-nf-focus-ring-offset);
+  }
 }
 
-.notification-card__button:focus:not(:focus-visible),
-.notification-card__close:focus:not(:focus-visible) {
-    outline: none;
+.omni-notification-card__button:focus:not(:focus-visible),
+.omni-notification-card__close:focus:not(:focus-visible) {
+  outline: none;
 }
 
 @keyframes omni-nf-slide-in {
-    from {
-        transform: translateX(var(--omni-nf-animation-distance));
-        -webkit-transform: translateX(var(--omni-nf-animation-distance));
-    }
-    to {
-        transform: translateX(0);
-        -webkit-transform: translateX(0);
-    }
+  from {
+    transform: translateX(var(--omni-nf-animation-distance));
+    -webkit-transform: translateX(var(--omni-nf-animation-distance));
+  }
+  to {
+    transform: translateX(0);
+    -webkit-transform: translateX(0);
+  }
 }
 
 @-webkit-keyframes omni-nf-slide-in {
-    from {
-        -webkit-transform: translateX(var(--omni-nf-animation-distance));
-    }
-    to {
-        -webkit-transform: translateX(0);
-    }
+  from {
+    -webkit-transform: translateX(var(--omni-nf-animation-distance));
+  }
+  to {
+    -webkit-transform: translateX(0);
+  }
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .notification-card {
-        animation: none;
-        -webkit-animation: none;
-    }
+  .omni-notification-card {
+    animation: none;
+    -webkit-animation: none;
+  }
 }

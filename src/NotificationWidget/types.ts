@@ -1,19 +1,66 @@
 import type { ComponentType, ReactElement } from "react";
 
+export type CloseKeyScope = "global" | "focused" | "off";
+
+export interface CloseKeyboardSettings {
+  /** Значение KeyboardEvent.key: "Escape", "Delete", "q"... */
+  key: string;
+  /**
+   * - "focused": только когда фокус внутри карточки
+   * - "global": на любое нажатие в документе
+   * - "off": клавишей не закрывать
+   */
+  scope: CloseKeyScope;
+}
+
 export interface NotificationSettings {
   maxVisible: number;
   removalAnimationMs: number;
-  closeWithKeyboard: string;
+  closeKeyboard: CloseKeyboardSettings;
   closeButtonEnabled: boolean;
-  autoCloseMs?: number;
-  buttonHref: string;
+  autoCloseMs: number;
   defaultIcon: ComponentType;
   closeIcon: ComponentType;
 }
 
+/**
+ * Настройки, которые имеют смысл на уровне одного уведомления.
+ * maxVisible — настройка списка, сюда не входит.
+ */
+export type NotificationItemSettings = Pick<
+  NotificationSettings,
+  | "removalAnimationMs"
+  | "closeKeyboard"
+  | "closeButtonEnabled"
+  | "autoCloseMs"
+  | "defaultIcon"
+  | "closeIcon"
+>;
+
+/**
+ * Частичное переопределение настроек виджета.
+ * closeKeyboard можно задать частично (например, только scope).
+ */
+export type NotificationSettingsOverrides = Partial<
+  Omit<NotificationSettings, "closeKeyboard">
+> & {
+  closeKeyboard?: Partial<CloseKeyboardSettings>;
+};
+
+/** Частичное переопределение настроек одного уведомления. */
+export type NotificationItemOverrides = Partial<
+  Omit<NotificationItemSettings, "closeKeyboard">
+> & {
+  closeKeyboard?: Partial<CloseKeyboardSettings>;
+};
+
 export interface NotificationPicture {
-  /** Путь к картинке */
-  image?: string;
+  /** Основная картинка (наивысший приоритет) */
+  main?: string;
+  /** Превью, если main нет или не загрузилась */
+  preview?: string;
+  /** Обложка, если нет main и preview или они не загрузились */
+  cover?: string;
   /** Компонент с svg, готовый <svg>…</svg> или путь к svg-файлу */
   icon?: ComponentType | ReactElement | string;
   /** Эмодзи */
@@ -27,10 +74,18 @@ export interface NotificationApiItem {
   picture: NotificationPicture;
 }
 
-export interface NotificationCardProps extends NotificationApiItem {
+export interface NotificationAppItem extends NotificationApiItem {
+  /** Переопределение глобального конфига для этого уведомления */
+  settings?: NotificationItemOverrides;
+}
+
+export interface NotificationCardProps extends NotificationAppItem {
   onClose: () => void;
-  buttonText?: string;
-  buttonHref?: string;
+  action?: {
+    url: string;
+    title: string;
+  };
+  role?: "status" | "alert";
 }
 
 export interface NotificationListItem extends NotificationCardProps {
@@ -47,5 +102,5 @@ export interface NotificationWidgetHandle {
 export interface NotificationWidgetProps {
   maxVisible?: number;
   removalAnimationMs?: number;
-  settings?: Partial<NotificationSettings>;
+  settings?: NotificationSettingsOverrides;
 }
