@@ -17,8 +17,9 @@ import {
 } from "../context/NotificationContext";
 import notificationSettings from "../config/notification.config";
 import NotificationWidget from "../Widget/NotificationWidget";
+import { useFocusReturn } from "../helpers/a11y/useFocusReturn";
 
-interface NotificationProviderProps {
+export interface NotificationProviderProps {
   children: ReactNode;
   maxVisible?: number;
   removalAnimationMs?: number;
@@ -51,24 +52,8 @@ export function NotificationProvider({
   // Синхронный источник правды о том, что уже поставлено на удаление
   const removingIdsRef = useRef<Set<string>>(new Set());
   const timersRef = useRef<Set<number>>(new Set());
-
-  // Последний сфокусированный элемент вне виджета: туда вернём фокус при закрытии
-  const lastOutsideFocusRef = useRef<HTMLElement | null>(null);
-
-  useEffect(() => {
-    const onFocusIn = (event: FocusEvent) => {
-      const target = event.target;
-      if (
-        target instanceof HTMLElement &&
-        !target.closest(".notification-widget")
-      ) {
-        lastOutsideFocusRef.current = target;
-      }
-    };
-
-    document.addEventListener("focusin", onFocusIn);
-    return () => document.removeEventListener("focusin", onFocusIn);
-  }, []);
+  const widgetContainerRef = useRef<HTMLDivElement>(null);
+  const releaseFocus = useFocusReturn(widgetContainerRef);
 
   useEffect(() => {
     const timers = timersRef.current;
@@ -78,27 +63,14 @@ export function NotificationProvider({
     };
   }, []);
 
-  // Если фокус внутри удаляемой карточки, возвращаем его ДО установки aria-hidden
-  const releaseFocus = useCallback((id: string) => {
-    const active = document.activeElement;
-    if (!(active instanceof HTMLElement)) return;
-
-    const item = document.querySelector<HTMLElement>(
-      `.notification-widget [data-notification-id="${CSS.escape(id)}"]`,
-    );
-    if (!item || !item.contains(active)) return;
-
-    const previous = lastOutsideFocusRef.current;
-    if (previous && previous.isConnected) {
-      previous.focus({ preventScroll: true });
-    } else {
-      active.blur();
-    }
-  }, []);
-
   const remove = useCallback(
     (id: string) => {
-      if (removingIdsRef.current.has(id)) return;
+      if (
+        removingIdsRef.current.has(id) ||
+        !itemsRef.current.some((item) => item.id === id)
+      ) {
+        return;
+      }
       removingIdsRef.current.add(id);
 
       releaseFocus(id);
@@ -110,16 +82,19 @@ export function NotificationProvider({
         itemsRef.current.find((item) => item.id === id)?.settings
           ?.removalAnimationMs ?? defaultRemovalMs;
 
-      const timer = window.setTimeout(() => {
-        timersRef.current.delete(timer);
-        removingIdsRef.current.delete(id);
-        setItems((prev) => prev.filter((item) => item.id !== id));
-        setRemovingIds((prev) => {
-          const next = new Set(prev);
-          next.delete(id);
-          return next;
-        });
-      }, duration);
+      const timer = window.setTimeout(
+        () => {
+          timersRef.current.delete(timer);
+          removingIdsRef.current.delete(id);
+          setItems((prev) => prev.filter((item) => item.id !== id));
+          setRemovingIds((prev) => {
+            const next = new Set(prev);
+            next.delete(id);
+            return next;
+          });
+        },
+        duration,
+      );
       timersRef.current.add(timer);
     },
     [defaultRemovalMs, releaseFocus],
@@ -183,7 +158,11 @@ export function NotificationProvider({
   );
 
   const state = useMemo<NotificationState>(
-    () => ({ items, removingIds, settings: resolvedSettings }),
+    () => ({
+      items,
+      removingIds,
+      settings: resolvedSettings,
+    }),
     [items, removingIds, resolvedSettings],
   );
 
@@ -191,7 +170,7 @@ export function NotificationProvider({
     <NotificationActionsContext.Provider value={actions}>
       <NotificationStateContext.Provider value={state}>
         {children}
-        <NotificationWidget />
+        <NotificationWidget containerRef={widgetContainerRef} />
       </NotificationStateContext.Provider>
     </NotificationActionsContext.Provider>
   );

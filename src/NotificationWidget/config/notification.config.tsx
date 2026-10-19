@@ -5,14 +5,16 @@ import type { NotificationSettings } from "../types";
 const notificationSettings: NotificationSettings = {
   maxVisible: 3,
   removalAnimationMs: 250,
-  closeKeyboard: {
+  keyboardClose: {
     key: "Escape",
-    scope: "focused"
+    scope: "focused",
   },
   closeButtonEnabled: true,
-  autoCloseMs: 0,
+  autoCloseMs: 5000,
+  keyboardNavigation: true,
   defaultIcon: <BellRing />,
   closeIcon: <CloseIcon />,
+  borderBottom: false,
 };
 
 export default notificationSettings;

@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { useNotification } from "./NotificationWidget/context/NotificationContext";
 import { NotificationProvider } from "./NotificationWidget/provider/NotificationProvider";
+import { createId } from "./NotificationWidget/helpers/createId";
 
 function Demo() {
   const { add } = useNotification();
@@ -9,6 +10,7 @@ function Demo() {
   const showNotification = () => {
     setCounter((prev) => prev + 1);
     add({
+      id: createId(), // message_id
       role: "alert",
       status: "unread",
       title: `Новое уведомление ${counter}`,
@@ -20,6 +22,9 @@ function Demo() {
       action: {
         title: "Посмотреть",
         url: "#",
+      },
+      settings: {
+        keyboardNavigation: false,
       },
     });
   };
@@ -63,7 +68,8 @@ function App() {
     <NotificationProvider
       settings={{
         maxVisible: 3,
-        autoCloseMs: 0,
+        borderBottom: true,
+        keyboardNavigation: false,
       }}
     >
       <Demo />

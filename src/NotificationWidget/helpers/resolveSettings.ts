@@ -9,7 +9,7 @@ export function resolveSettings(
 ): NotificationSettings {
   if (!overrides) return base;
 
-  const { closeKeyboard, ...rest } = overrides;
+  const { keyboardClose, ...rest } = overrides;
 
   // Отбрасываем поля со значением undefined, чтобы они не затирали base
   const defined = Object.fromEntries(
@@ -19,11 +19,11 @@ export function resolveSettings(
   return {
     ...base,
     ...defined,
-    closeKeyboard: {
-      ...base.closeKeyboard,
-      ...(closeKeyboard &&
+    keyboardClose: {
+      ...base.keyboardClose,
+      ...(keyboardClose &&
         Object.fromEntries(
-          Object.entries(closeKeyboard).filter(([, v]) => v !== undefined),
+          Object.entries(keyboardClose).filter(([, v]) => v !== undefined),
         )),
     },
   };

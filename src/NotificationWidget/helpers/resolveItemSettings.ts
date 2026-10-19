@@ -9,7 +9,7 @@ export function resolveItemSettings(
 
   const result = { ...base } as NotificationSettings & Record<string, unknown>;
 
-  const { closeKeyboard, ...rest } = override;
+  const { keyboardClose, ...rest } = override;
 
   Object.entries(rest).forEach(([key, value]) => {
     if (value !== undefined) {
@@ -17,11 +17,13 @@ export function resolveItemSettings(
     }
   });
 
-  if (closeKeyboard) {
-    result.closeKeyboard = {
-      ...base.closeKeyboard,
+  if (keyboardClose) {
+    result.keyboardClose = {
+      ...base.keyboardClose,
       ...Object.fromEntries(
-        Object.entries(closeKeyboard).filter(([, value]) => value !== undefined),
+        Object.entries(keyboardClose).filter(
+          ([, value]) => value !== undefined,
+        ),
       ),
     };
   }

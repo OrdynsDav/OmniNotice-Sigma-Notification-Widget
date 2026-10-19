@@ -9,6 +9,7 @@ interface RenderNotificationPictureOptions {
   failedUrls: string[];
   defaultIcon: NotificationIcon;
   onImageError: (url: string) => void;
+  imageAlt?: string
 }
 
 export function renderNotificationPicture({
@@ -16,6 +17,7 @@ export function renderNotificationPicture({
   failedUrls,
   defaultIcon,
   onImageError,
+  imageAlt
 }: RenderNotificationPictureOptions): ReactNode {
   const { main, preview, cover, icon, emoji } = picture;
   const isFailed = (url: string) => failedUrls.includes(url);
@@ -30,7 +32,7 @@ export function renderNotificationPicture({
       <img
         className={omni("notification-card__image")}
         src={imageSrc}
-        alt=""
+        alt={imageAlt ?? "Иконка уведомления"}
         onError={() => onImageError(imageSrc)}
       />
     );
@@ -44,7 +46,7 @@ export function renderNotificationPicture({
           <img
             className={omni("notification-card__image")}
             src={icon}
-            alt=""
+            alt={imageAlt ?? "Иконка уведомления"}
             onError={() => onImageError(icon)}
           />
         );

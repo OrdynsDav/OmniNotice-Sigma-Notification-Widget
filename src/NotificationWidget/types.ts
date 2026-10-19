@@ -6,7 +6,7 @@ export type NotificationIcon =
 
 export type CloseKeyScope = "global" | "focused" | "off";
 
-export interface CloseKeyboardSettings {
+export interface KeyboardCloseSettings {
   /** Значение KeyboardEvent.key: "Escape", "Delete", "q"... */
   key: string;
   /**
@@ -20,11 +20,13 @@ export interface CloseKeyboardSettings {
 export interface NotificationSettings {
   maxVisible: number;
   removalAnimationMs: number;
-  closeKeyboard: CloseKeyboardSettings;
+  keyboardClose: KeyboardCloseSettings;
   closeButtonEnabled: boolean;
   autoCloseMs: number;
+  keyboardNavigation: boolean;
   defaultIcon: NotificationIcon;
   closeIcon: NotificationIcon;
+  borderBottom?: boolean;
 }
 
 /**
@@ -34,28 +36,29 @@ export interface NotificationSettings {
 export type NotificationItemSettings = Pick<
   NotificationSettings,
   | "removalAnimationMs"
-  | "closeKeyboard"
+  | "keyboardClose"
   | "closeButtonEnabled"
   | "autoCloseMs"
+  | "keyboardNavigation"
   | "defaultIcon"
   | "closeIcon"
 >;
 
 /**
  * Частичное переопределение настроек виджета.
- * closeKeyboard можно задать частично (например, только scope).
+ * keyboardClose можно задать частично (например, только scope).
  */
 export type NotificationSettingsOverrides = Partial<
-  Omit<NotificationSettings, "closeKeyboard">
+  Omit<NotificationSettings, "keyboardClose">
 > & {
-  closeKeyboard?: Partial<CloseKeyboardSettings>;
+  keyboardClose?: Partial<KeyboardCloseSettings>;
 };
 
 /** Частичное переопределение настроек одного уведомления. */
 export type NotificationItemOverrides = Partial<
-  Omit<NotificationItemSettings, "closeKeyboard">
+  Omit<NotificationItemSettings, "keyboardClose">
 > & {
-  closeKeyboard?: Partial<CloseKeyboardSettings>;
+  keyboardClose?: Partial<KeyboardCloseSettings>;
 };
 
 export interface NotificationPicture {
@@ -101,10 +104,4 @@ export interface NotificationWidgetHandle {
     notification: Omit<NotificationCardProps, "onClose"> & { id?: string },
   ) => string;
   remove: (id: string) => void;
-}
-
-export interface NotificationWidgetProps {
-  maxVisible?: number;
-  removalAnimationMs?: number;
-  settings?: NotificationSettingsOverrides;
 }

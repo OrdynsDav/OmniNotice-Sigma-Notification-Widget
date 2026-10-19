@@ -16,7 +16,7 @@
   --omni-nf-color-icon-bg: #d1deff;
   --omni-nf-color-button-bg: var(--omni-nf-color-base, #487bfe);
   --omni-nf-color-button-bg-hover: hsl(
-    from var(--omni-nf-color-base) h s calc(l - 10)
+    from var(--omni-nf-color-base) h s calc(l - 8)
   );
   --omni-nf-color-button-text: #ffffff;
   --omni-nf-color-close-icon: #12233f;
@@ -62,7 +62,6 @@
     var(--omni-nf-animation-easing) both;
   -webkit-animation: omni-nf-slide-in var(--omni-nf-animation-duration)
     var(--omni-nf-animation-easing) both;
-  /*border-bottom: 3px solid var(--omni-nf-color-base);*/
 }
 
 @supports (background: color-mix(in srgb, #487bfe 25%, white)) {
@@ -73,6 +72,10 @@
       white
     );
   }
+}
+
+.omni-notification-card--border-bottom {
+  border-bottom: 3px solid var(--omni-nf-color-base);
 }
 
 .omni-notification-card *,
@@ -208,7 +211,9 @@
     var(--omni-nf-transition-easing);
 }
 
-.omni-notification-card__button:hover {
+.omni-notification-card__button:hover,
+.omni-notification-card__button:focus-visible, 
+.omni-notification-card__button:focus {
   background-color: var(--omni-nf-color-button-bg-hover);
 }
 
@@ -263,7 +268,9 @@
   display: block;
 }
 
-.omni-notification-card__close:hover {
+.omni-notification-card__close:hover, 
+.omni-notification-card__close:focus-visible,
+.omni-notification-card__close:focus {
   background-color: var(--omni-nf-color-close-bg-hover);
 }
 
