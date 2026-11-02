@@ -10,7 +10,7 @@ function Demo() {
   const showNotification = () => {
     setCounter((prev) => prev + 1);
     add({
-      id: createId(), // message_id
+      id: `omni-${createId()}`, // message_id
       role: "alert",
       status: "unread",
       title: `Новое уведомление ${counter}`,
@@ -25,7 +25,9 @@ function Demo() {
       },
       settings: {
         keyboardNavigation: false,
+        clickable: true,
       },
+      onClick: () => console.log("Клик"),
     });
   };
 
@@ -70,6 +72,7 @@ function App() {
         maxVisible: 3,
         borderBottom: true,
         keyboardNavigation: false,
+        autoCloseMs: 0,
       }}
     >
       <Demo />

@@ -15,6 +15,7 @@ const notificationSettings: NotificationSettings = {
   defaultIcon: <BellRing />,
   closeIcon: <CloseIcon />,
   borderBottom: false,
+  clickable: false,
 };
 
 export default notificationSettings;

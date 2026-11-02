@@ -20,7 +20,7 @@ export function useKeyboardClose(
   }, [onClose, key, scope]);
 
   return useCallback(
-    (event: ReactKeyboardEvent<HTMLDivElement>) => {
+    (event: ReactKeyboardEvent<HTMLElement>) => {
       if (scope !== "focused" || !key || event.key !== key) return;
       event.preventDefault();
       event.stopPropagation();

@@ -20,6 +20,7 @@ export default function NotificationCard({
   picture,
   action,
   onClose,
+  onClick,
   settings: overrides,
   baseSettings = notificationSettings,
 }: NotificationCardComponentProps) {
@@ -58,6 +59,7 @@ export default function NotificationCard({
       )}
       data-status={status}
       onKeyDown={handleCardKeyDown}
+      onClick={settings.clickable ? onClick : undefined}
     >
       <div className={omni("notification-card__inner")}>
         <div className={omni("notification-card__icon")} aria-hidden="true">

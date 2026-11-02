@@ -27,6 +27,7 @@ export interface NotificationSettings {
   defaultIcon: NotificationIcon;
   closeIcon: NotificationIcon;
   borderBottom?: boolean;
+  clickable?: boolean;
 }
 
 /**
@@ -42,6 +43,7 @@ export type NotificationItemSettings = Pick<
   | "keyboardNavigation"
   | "defaultIcon"
   | "closeIcon"
+  | "clickable"
 >;
 
 /**
@@ -88,6 +90,7 @@ export interface NotificationAppItem extends NotificationApiItem {
 
 export interface NotificationCardProps extends NotificationAppItem {
   onClose: () => void;
+  onClick?: () => void;
   action?: {
     url: string;
     title: string;
